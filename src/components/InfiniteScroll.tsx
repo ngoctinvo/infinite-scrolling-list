@@ -1,8 +1,8 @@
+import { InputBase, styled } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { fetchProducts, searchProduct } from "../api/product";
-import ProductList from "./ProductList";
 import { ProductType } from "../types/product";
-import { styled, InputBase } from "@mui/material";
+import ProductList from "./ProductList";
 
 const StyledInput = styled(InputBase)`
   width: 100%;
@@ -23,6 +23,9 @@ const StyledInput = styled(InputBase)`
   }
 `;
 
+let timeoutId: any = null;
+const TYPING_TIMEOUT = 200;
+
 const ScrollList: React.FC = () => {
   const [products, setProducts] = useState<ProductType[]>([]);
   const [skip, setSkip] = useState(0);
@@ -37,8 +40,10 @@ const ScrollList: React.FC = () => {
   };
 
   const searchProducts = async (query: string) => {
-    const searchedProducts = await searchProduct(query);
-    setFilteredProducts(searchedProducts);
+    timeoutId = setTimeout(async () => {
+      const searchedProducts = await searchProduct(query);
+      setFilteredProducts(searchedProducts);
+    }, TYPING_TIMEOUT);
   };
 
   const clearSearch = () => {
@@ -61,12 +66,9 @@ const ScrollList: React.FC = () => {
     let isFetching = false;
 
     const handleScroll = () => {
-      const {
-        scrollTop,
-        clientHeight,
-        scrollHeight,
-      } = document.documentElement;
-      const threshold = 200; // Distance from the bottom of the page
+      const { scrollTop, clientHeight, scrollHeight } =
+        document.documentElement;
+      const threshold = 200; 
 
       if (!isFetching && scrollTop + clientHeight >= scrollHeight - threshold) {
         isFetching = true;
@@ -91,6 +93,7 @@ const ScrollList: React.FC = () => {
   const handleSearchInputChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    clearTimeout(timeoutId);
     const query = event.target.value;
     setSearchQuery(query);
 
