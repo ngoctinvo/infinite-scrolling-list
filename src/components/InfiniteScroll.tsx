@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { fetchProducts, searchProduct } from "../api/product";
 import ProductList from "./ProductList";
 import { ProductType } from "../types/product";
-import { styled, InputBase } from '@mui/material';
+import { styled, InputBase } from "@mui/material";
 
 const StyledInput = styled(InputBase)`
   width: 100%;
@@ -22,6 +22,7 @@ const StyledInput = styled(InputBase)`
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
   }
 `;
+
 const ScrollList: React.FC = () => {
   const [products, setProducts] = useState<ProductType[]>([]);
   const [skip, setSkip] = useState(0);
@@ -31,7 +32,7 @@ const ScrollList: React.FC = () => {
 
   const fetchNextProducts = async () => {
     const newProducts = await fetchProducts(skip, limit);
-    setProducts((prevProducts) => [...prevProducts, ...newProducts]);
+    setFilteredProducts((prevProducts) => [...prevProducts, ...newProducts]);
     setSkip((prevSkip) => prevSkip + limit);
   };
 
@@ -60,7 +61,11 @@ const ScrollList: React.FC = () => {
     let isFetching = false;
 
     const handleScroll = () => {
-      const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
+      const {
+        scrollTop,
+        clientHeight,
+        scrollHeight,
+      } = document.documentElement;
       const threshold = 200; // Distance from the bottom of the page
 
       if (!isFetching && scrollTop + clientHeight >= scrollHeight - threshold) {
@@ -81,9 +86,11 @@ const ScrollList: React.FC = () => {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [products]);
+  }, []);
 
-  const handleSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const query = event.target.value;
     setSearchQuery(query);
 
@@ -96,13 +103,13 @@ const ScrollList: React.FC = () => {
 
   return (
     <div>
-        <StyledInput
-      type="text"
-      value={searchQuery}
-      onChange={handleSearchInputChange}
-      placeholder="Search products"
-    />
- 
+      <StyledInput
+        type="text"
+        value={searchQuery}
+        onChange={handleSearchInputChange}
+        placeholder="Search products"
+      />
+
       <h1>Product List</h1>
       <ProductList products={filteredProducts} />
     </div>
@@ -110,69 +117,3 @@ const ScrollList: React.FC = () => {
 };
 
 export default ScrollList;
-
-
-
-
-// import React, { useEffect, useState } from "react";
-// import { fetchProducts } from "../api/product";
-// import ProductList from "./ProductList";
-// import { ProductType } from "../types/product";
-
-// const ScrollList: React.FC = () => {
-//   const [products, setProducts] = useState<ProductType[]>([]);
-//   const [skip, setSkip] = useState(0);
-//   const limit = 20;
-
-//   const fetchNextProducts = async () => {
-//     const newProducts = await fetchProducts(skip, limit);
-//     setProducts((prevProducts) => [...prevProducts, ...newProducts]);
-//     setSkip((prevSkip) => prevSkip + limit);
-//   };
-
-//   useEffect(() => {
-//     const fetchInitialProducts = async () => {
-//       const initialProducts = await fetchProducts(skip, limit);
-//       setProducts(initialProducts);
-//       setSkip(skip + limit);
-//     };
-
-//     fetchInitialProducts();
-//   }, []);
-
-//   useEffect(() => {
-//   let isFetching = false;
-
-//   const handleScroll = () => {
-//     const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
-//     const threshold = 200; // Distance from the bottom of the page
-
-//     if (!isFetching && scrollTop + clientHeight >= scrollHeight - threshold) {
-//       isFetching = true;
-//       fetchNextProducts()
-//         .then(() => {
-//           isFetching = false;
-//         })
-//         .catch((error) => {
-//           console.error("Error fetching next products:", error);
-//           isFetching = false;
-//         });
-//     }
-//   };
-
-//   window.addEventListener("scroll", handleScroll);
-
-//   return () => {
-//     window.removeEventListener("scroll", handleScroll);
-//   };
-// }, [products]);
-
-//   return (
-//     <div>
-//       <h1>Product List</h1>
-//       <ProductList products={products} />
-//     </div>
-//   );
-// };
-
-// export default ScrollList;
