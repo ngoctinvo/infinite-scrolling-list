@@ -1,6 +1,6 @@
-import React from 'react';
-import { Box, Typography, Card, CardMedia, CardContent } from '@mui/material';
-import { ProductType } from '../types/product';
+import React from "react";
+import { ProductType } from "../types/product";
+import { Card, CardMedia, CardContent, Typography } from "@mui/material";
 
 const Product: React.FC<ProductType> = ({
   title,
@@ -15,13 +15,8 @@ const Product: React.FC<ProductType> = ({
   images,
 }) => {
   return (
-       <Card sx={{ maxWidth: 300 }}>
-      <CardMedia
-        component="img"
-        height="200"
-        image={thumbnail}
-        alt={title}
-      />
+    <Card style={{ maxWidth: 300, height: 500 }}>
+      <CardMedia component="img" height={200} image={thumbnail} alt={title} />
       <CardContent>
         <Typography variant="h6" gutterBottom>
           {title}

@@ -2,7 +2,26 @@ import React, { useEffect, useState } from "react";
 import { fetchProducts, searchProduct } from "../api/product";
 import ProductList from "./ProductList";
 import { ProductType } from "../types/product";
+import { styled, InputBase } from '@mui/material';
 
+const StyledInput = styled(InputBase)`
+  width: 100%;
+  padding: 10px 15px;
+  font-size: 16px;
+  border-radius: 8px;
+  background-color: #f2f2f2;
+  border: none;
+  outline: none;
+
+  &:hover {
+    background-color: #e0e0e0;
+  }
+
+  &:focus {
+    background-color: #ffffff;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+  }
+`;
 const ScrollList: React.FC = () => {
   const [products, setProducts] = useState<ProductType[]>([]);
   const [skip, setSkip] = useState(0);
@@ -77,12 +96,13 @@ const ScrollList: React.FC = () => {
 
   return (
     <div>
-      <input
-        type="text"
-        value={searchQuery}
-        onChange={handleSearchInputChange}
-        placeholder="Search products"
-      />
+        <StyledInput
+      type="text"
+      value={searchQuery}
+      onChange={handleSearchInputChange}
+      placeholder="Search products"
+    />
+ 
       <h1>Product List</h1>
       <ProductList products={filteredProducts} />
     </div>
